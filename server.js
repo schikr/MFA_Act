@@ -16,7 +16,7 @@ const session = require("express-session")
 
 initializePassport(passport, 
     email => users.find(user => user.email === email), //auth
-    id => users.find(user => user.id === id)           //user session
+    id => users.find(user => user.id === id)           //user ser and deser
     )
 
 
