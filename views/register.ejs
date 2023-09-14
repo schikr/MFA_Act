@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+}
+
+.page {
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(bg.png);
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+}
+
+
+.form_box {
+    width: 400px;
+    height: 400px;
+    background: #fff;
+    padding: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border-radius: 40px;
+}
+
+.button {
+    width: 220px;
+    margin: 35px auto;
+    position: relative;
+    box-shadow: 0 0 200px 100px rgba(1, 71, 128, 0.067);
+    border-radius: 30px;
+    align-items: center;
+}
+
+.btn_toggle_in {
+    padding: 10px 30px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    outline: none;
+    position: relative;
+    background: linear-gradient(to right, #00345f, #0080e9);
+    border-radius: 10px;
+    color: #fff;
+}
+
+.btn_toggle_up {
+    padding: 10px 30px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    outline: none;
+    position: relative;
+    background: linear-gradient(to right, #00345f, #0080e9);
+    border-radius: 10px;
+    color: #fff;
+}
+
+#btn {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 110px;
+    height: 100%;
+    background: linear-gradient(to right, #00345f, #0080e9);
+    border-radius: 30px;
+    transition: .5s;
+}
+
+.sign_form {
+    top: 150px;
+    width: 300px;
+    
+}
+
+.space {
+    padding: 25px;
+}
+
+.input_field {
+    width: 100%;
+    padding: 10px 0;
+    margin: 5px 0;
+    border-left: 0;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+
+.btn_submit {
+    width: 85%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    background-color: linear-gradient(to right, #00345f, #0080e9);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+}
+
+#error_msg {
+    text-align: center;
+    font-size: smaller;
+    color: #fff;
+    background-color: rgb(233, 165, 165);
+    border-radius: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="form_box">
+            <div class="button">
+                <button id = "In" type="button" class="btn_toggle_in" onclick="window.location.href='/login'">Sign In</button>
+                <button id = "Up" type="button" class="btn_toggle_up" onclick="window.location.href='/register'">Sign Up</button>
+            </div>
+            <center>
+                <form id="signUp" class="sign_form" action="/register" method="POST">
+                    <% if (messages.error) { %>
+                        <div id="error_msg">
+                            <strong><%= messages.error %></strong>
+                        </div>
+                    <% } %> 
+                    <input type="text" name="fullName" id="username_signUp" class="input_field" placeholder="Full Name" required>
+                    <div class="message" id="username_message"></div>
+                    <input type="email" name="email" id="email_signUp" class="input_field" placeholder="Email" required>
+                    <div class="message" id="email_message"></div>
+                    <input type="password" name="password" id="password_signUp" class="input_field" placeholder="Password" required>
+                    <div class="message" id="password_message"></div>
+                    <div class="space"></div>
+                    <button type="submit" class="btn_submit">Sign Up</button>
+                </form>
+            </center>
+        </div>
+    </div>
+</body>
+</html>

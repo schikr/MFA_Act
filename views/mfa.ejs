@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <style>
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .page {
+        height: 100%;
+        width: 100%;
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(bg.png);
+        background-position: center;
+        background-size: cover;
+        position: absolute;
+    }
+
+
+    .form_box {
+        width: 400px;
+        height: 400px;
+        background: #fff;
+        padding: 5px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        overflow: hidden;
+        border-radius: 40px;
+    }
+
+    .text_display {
+        text-align: center;
+    }
+
+    .text_title {
+        font-size:xx-large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        margin: 10px;
+        padding-top: 20px;
+    }
+
+    .text_body {
+        font-size: medium;
+        font-family: 'Courier New', Courier, monospace;
+        margin: 10px;
+        padding-top: 25px;
+    }
+
+    .input_otp {
+        margin: 30px 0;
+        display: grid;
+        gap: 25px;
+        justify-content: center;
+        grid-template-columns: repeat(6, auto);
+    }
+
+    .input_otp input {
+        width: 35px;
+        height: 45px;
+        font-size: 25px;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    .input_otp input:focus {
+        outline: 2px solid #0080e9;
+        border-color: transparent;
+    }
+
+    .submit_otp {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .resend_otp {
+        font-size: 15px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .resend {
+        text-decoration: underline;
+        color: #0080e9;
+        cursor: pointer;
+    }
+
+    .send_otp {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: large;
+        margin: 30px;
+        width: 80%;
+        height: 50px;
+        border-radius: 50px;
+        color: #fff;
+        background-color: #0080e9;
+        border: none;
+    }
+
+    .submit_otp button:hover {
+        opacity: 1;
+    }
+
+    .submit_otp button[disabled] {
+        cursor: default;
+        opacity: .6;
+    }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="form_box">
+            <div class="text_display">
+                <p class="text_title">OTP Verification</p>
+                <p class="text_body">Enter the 6-digit authentication code that has been sent to your email address.</p>
+            </div>
+                <div class="input_otp" id="inputOTP">
+                    <input id="digit_1" type="text" maxlength="1" autofocus>
+                    <input id="digit_2" type="text" maxlength="1">
+                    <input id="digit_3" type="text" maxlength="1">
+                    <input id="digit_4" type="text" maxlength="1">
+                    <input id="digit_5" type="text" maxlength="1">
+                    <input id="digit_6" type="text" maxlength="1">
+                </div>
+                <form action="/mfa" method="POST">
+                    <div id="display_write"></div>
+                    <div class="submit_otp">
+                        <p class="resend_otp" id="resend_OTP">Didn't get the code? <a class="resend" onclick="resendOTP(); return false;">Resend</p>
+                        <button type="submit" class="send_otp" onclick="submit_OTP(); return false;">SUBMIT</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+    <script>
+//localStorage.getItem('email');
+const inputs = document.querySelectorAll('.input_otp input');
+const button = document.querySelector('.submit_otp button');
+var email = localStorage.getItem('email');
+
+inputs.forEach(input => {
+    let lastInputStatus = 0;
+    button.setAttribute('disabled', true);
+    input.onkeyup = (e) => {
+        const currentElement = e.target;
+        const nextElement = input.nextElementSibling;
+        const prevElement = input.previousElementSibling;
+    
+    if(prevElement && e.keyCode === 8) {
+        if(lastInputStatus === 1) {
+            prevElement.value = '';
+            prevElement.focus();
+        }
+        button.setAttribute('disabled', true);
+        lastInputStatus = 1;
+    }
+    else {
+        const validChar = /^[0-9]+$/;
+        if(!validChar.test(currentElement.value)) {
+            currentElement.value = currentElement.value.replace(/\D/g, ''); //non-digit char
+        }
+        else if(currentElement.value) {
+            if(nextElement) {
+                nextElement.focus();
+            }
+            else {
+                button.removeAttribute('disabled');
+                lastInputStatus = 0;
+            }
+        }
+    }
+}
+})
+
+function resendOTP() {
+    resendEmail();
+}
+
+function submit_OTP() {
+    var inputs = document.querySelectorAll("input_otp input:focus");
+    var OTP = document.getElementById("digit_1").value + 
+    document.getElementById("digit_2").value +
+    document.getElementById("digit_3").value +
+    document.getElementById("digit_4").value +
+    document.getElementById("digit_5").value +
+    document.getElementById("digit_6").value;
+    var otp_code = localStorage.getItem('otp')
+    //console.log(email);
+
+    if(OTP == otp_code) {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+    else {
+        document.getElementById("digit_1").style.outline = "2px solid red";
+        document.getElementById("digit_2").style.outline = "2px solid red"; 
+        document.getElementById("digit_3").style.outline = "2px solid red"; 
+        document.getElementById("digit_4").style.outline = "2px solid red"; 
+        document.getElementById("digit_5").style.outline = "2px solid red"; 
+        document.getElementById("digit_6").style.outline = "2px solid red";
+
+        setTimeout(function() {
+            document.getElementById("digit_1").value = "";
+            document.getElementById("digit_2").value = ""; 
+            document.getElementById("digit_3").value = ""; 
+            document.getElementById("digit_4").value = ""; 
+            document.getElementById("digit_5").value = ""; 
+            document.getElementById("digit_6").value = "";
+            button.setAttribute('disabled', true);
+        }, 1000);
+    }
+}
+
+function generateOTP() {
+    var digits = '0123456789';
+    var otpLength = 6;
+    var otp = '';
+    for(let i = 1; i <= otpLength; i++) {
+        var index = Math.floor(Math.random()*(digits.length));
+        otp = otp + digits[index];
+    }
+    return otp;
+}
+
+function sendEmail() {
+    var otp_code = generateOTP();
+    localStorage.setItem('otp', otp_code);
+    var otp_code = localStorage.getItem('otp');
+
+    let emailbody = `
+        <h1>Login Code</h1>
+        <h2>Your OTP is </h2>${otp_code}
+    `;
+    
+    Email.send({
+        SecureToken : "92f5a38e-d0a3-43c1-a0e2-170de738ed6c",
+        To : email,
+        From : "zeekcik0129@gmail.com",
+        Subject : "Login Authentication",
+        Body : emailbody
+    }).then(
+    message => 
+    window.location.href = "mfa.ejs"
+    );
+}
+
+function resendEmail() {
+    var otp_code = generateOTP();
+    localStorage.setItem('otp', otp_code);
+    var otp_code = localStorage.getItem('otp');
+    let emailbody = `
+        <h1>Login Code</h1>
+        <h2>Your OTP is ${otp_code}.</h2>
+    `;
+    
+    Email.send({
+        SecureToken : "92f5a38e-d0a3-43c1-a0e2-170de738ed6c",
+        To : email,
+        From : "zeekcik0129@gmail.com",
+        Subject : "Login Authentication",
+        Body : emailbody
+    });
+}
+    </script>
+</body>
+</html>

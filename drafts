@@ -1,0 +1,27 @@
+npm init
+
+npm i express ejs
+
+npm i --save-dev nodemon dotenv
+
+npm i bcrypt
+
+taskkill /F /IM node.exe  = Error: listen EADDRINUSE: address already in use :::3000
+
+npm i passport passport-local express-session express-flash
+
+npm i store
+
+npm install node-localstorage
+
+npm install localStorage
+npm install -g browserify
+npm i nodemailer
+
+zeekcik0129@gmail.com
+D90BFB5A442AACA2B3FDFE2E6DE69BA4EABB
+smtp.elasticemail.com
+Port
+2525
+
+92f5a38e-d0a3-43c1-a0e2-170de738ed6c
