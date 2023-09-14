@@ -142,6 +142,8 @@
 //localStorage.getItem('email');
 const inputs = document.querySelectorAll('.input_otp input');
 const button = document.querySelector('.submit_otp button');
+var otp_code = generateOTP();
+localStorage.setItem('otp', otp_code);
 var email = localStorage.getItem('email');
 
 inputs.forEach(input => {
